@@ -1,0 +1,13 @@
+bin/
+obj/
+*.user
+*.suo
+*.ps1
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.vs/
+.vscode/
+TestResults/
