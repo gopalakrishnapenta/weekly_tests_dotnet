@@ -5,49 +5,141 @@ using PayrollSystem.Services;
 
 namespace PayrollSystem
 {
-    /// <summary>
-    /// Entry point of the Payroll System application.
-    /// </summary>
     class Program
     {
         static void Main()
         {
-            #region Sample Data Initialization
+            var employees = new List<Employee>();
+            bool exit = false;
 
-            // Hardcoded employee data as per assignment requirement
-            var employees = new List<Employee>
+            Console.WriteLine("=== Payroll System ===\n");
+
+            while (!exit)
             {
-                new FullTimeEmployee(1, "Ravi", 50000, 30),
-                new FullTimeEmployee(2, "Anita", 60000, 30),
-                new ContractEmployee(3, "Suresh", 1500, 20),
-                new ContractEmployee(4, "Meena", 1200, 22),
-                new FullTimeEmployee(5, "John", 70000, 30),
-                new ContractEmployee(6, "Kiran", 1000, 25)
-            };
+                Console.WriteLine("1. Add Full-Time Employee");
+                Console.WriteLine("2. Add Contract Employee");
+                Console.WriteLine("3. Process Payroll");
+                Console.WriteLine("4. Exit");
+                Console.Write("Choose an option: ");
 
-            Console.WriteLine("6 employees added successfully.\n");
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Invalid input.\n");
+                    continue;
+                }
 
-            #endregion
+                switch (choice)
+                {
+                    case 1:
+                        AddFullTimeEmployee(employees);
+                        break;
 
-            #region Payroll Processing
+                    case 2:
+                        AddContractEmployee(employees);
+                        break;
 
-            var payrollProcessor = new PayrollProcessor();
+                    case 3:
+                        if (employees.Count == 0)
+                        {
+                            Console.WriteLine("No employees available.\n");
+                            break;
+                        }
 
-            // Multicast delegate subscriptions
-            payrollProcessor.SalaryProcessed += NotificationService.NotifyHR;
-            payrollProcessor.SalaryProcessed += NotificationService.NotifyFinance;
+                        ProcessPayroll(employees);
+                        exit = true;
+                        break;
 
-            List<PaySlip> payslips = payrollProcessor.ProcessPayroll(employees);
+                    case 4:
+                        exit = true;
+                        break;
 
-            #endregion
+                    default:
+                        Console.WriteLine("Invalid option.\n");
+                        break;
+                }
+            }
 
-            #region Reporting
+            Console.WriteLine("Application closed.");
+            Console.ReadLine();
+        }
 
+        #region Helper Methods
+
+        private static void AddFullTimeEmployee(List<Employee> employees)
+        {
+            int id = ReadInt("Enter Employee ID: ");
+            string name = ReadString("Enter Employee Name: ");
+            decimal salary = ReadDecimal("Enter Monthly Salary: ");
+            int workingDays = ReadInt("Enter Working Days: ");
+
+            employees.Add(new FullTimeEmployee(id, name, salary, workingDays));
+            Console.WriteLine("Full-Time Employee added.\n");
+        }
+
+        private static void AddContractEmployee(List<Employee> employees)
+        {
+            int id = ReadInt("Enter Employee ID: ");
+            string name = ReadString("Enter Employee Name: ");
+            decimal dailyRate = ReadDecimal("Enter Daily Rate: ");
+            int workingDays = ReadInt("Enter Working Days: ");
+
+            employees.Add(new ContractEmployee(id, name, dailyRate, workingDays));
+            Console.WriteLine("Contract Employee added.\n");
+        }
+
+        private static void ProcessPayroll(List<Employee> employees)
+        {
+            var processor = new PayrollProcessor();
+
+            processor.SalaryProcessed += NotificationService.NotifyHR;
+            processor.SalaryProcessed += NotificationService.NotifyFinance;
+
+            var payslips = processor.ProcessPayroll(employees);
             PayrollReportService.PrintSummary(payslips);
 
-            #endregion
-
-            
+            Console.WriteLine("\nPayroll processed successfully.\n");
         }
+
+        #endregion
+
+        #region Input Utilities
+
+        private static int ReadInt(string message)
+        {
+            while (true)
+            {
+                Console.Write(message);
+                if (int.TryParse(Console.ReadLine(), out int value))
+                    return value;
+
+                Console.WriteLine("Invalid number.");
+            }
+        }
+
+        private static decimal ReadDecimal(string message)
+        {
+            while (true)
+            {
+                Console.Write(message);
+                if (decimal.TryParse(Console.ReadLine(), out decimal value))
+                    return value;
+
+                Console.WriteLine("Invalid amount.");
+            }
+        }
+
+        private static string ReadString(string message)
+        {
+            string input;
+            do
+            {
+                Console.Write(message);
+                input = Console.ReadLine() ?? string.Empty;
+            } while (string.IsNullOrWhiteSpace(input));
+
+            return input;
+        }
+
+        #endregion
     }
 }
