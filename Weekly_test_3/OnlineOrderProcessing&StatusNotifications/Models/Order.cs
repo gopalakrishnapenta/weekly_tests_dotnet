@@ -13,8 +13,14 @@ namespace OnlineOrderApp.Models
 
         #region Fields // This region contains all private fields of the Order class
 
-        private List<OrderItem> items = new List<OrderItem>(); // Stores the list of items in the order
-        private List<OrderHistory> history = new List<OrderHistory>(); // Stores the history of status changes for the order
+    private List<OrderItem> items = new List<OrderItem>(); // Stores the list of items in the order
+    private List<OrderHistory> history = new List<OrderHistory>(); // Stores the history of status changes for the order
+    private List<string> logs = new List<string>(); // Stores logs for the order
+    private static List<string> staticLogs = new List<string> { "Order system started.", "Static log: System initialized." };
+    /// <summary>
+    /// Gets the static logs for the order system.
+    /// </summary>
+    public static IReadOnlyList<string> StaticLogs => staticLogs;
 
         #endregion
 
@@ -44,6 +50,11 @@ namespace OnlineOrderApp.Models
         /// Gets the history of status changes for the order as a read-only list.
         /// </summary>
         public IReadOnlyList<OrderHistory> History => history; // Exposes the history list as a read-only property
+
+        /// <summary>
+        /// Gets the logs for the order as a read-only list.
+        /// </summary>
+        public IReadOnlyList<string> Logs => logs;
 
         #endregion
 
@@ -82,6 +93,9 @@ namespace OnlineOrderApp.Models
         public void AddProduct(Product product, int quantity) // Adds a product and its quantity to the order
         { 
             items.Add(new OrderItem(product, quantity)); // Creates a new OrderItem and adds it to the items list
+            string logMsg = $"Added {quantity} x {product.Name} (ID: {product.Id}) to order.";
+            logs.Add(logMsg);
+            staticLogs.Add($"[Dynamic] {logMsg}");
         } 
 
         /// <summary>
@@ -113,6 +127,9 @@ namespace OnlineOrderApp.Models
             history.Add(new OrderHistory(oldStatus, newStatus)); // Adds a new entry to the history list for this status change
 
             StatusChanged?.Invoke(this, oldStatus, newStatus); // Notifies any listeners that the status has changed
+            string logMsg = $"Order status changed from {oldStatus} to {newStatus}.";
+            logs.Add(logMsg);
+            staticLogs.Add($"[Dynamic] {logMsg}");
         } 
 
         #endregion
