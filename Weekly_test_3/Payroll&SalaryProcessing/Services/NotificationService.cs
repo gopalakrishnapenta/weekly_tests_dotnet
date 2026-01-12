@@ -15,7 +15,7 @@ namespace PayrollSystem.Services
         /// </summary>
         public static void NotifyHR(PaySlip slip)
         {
-            Console.WriteLine($"[HR] Salary processed for {slip.EmployeeName} | Net Salary: {slip.NetSalary}");
+            Console.WriteLine($"[HR] Salary processed for {slip.EmployeeName}");
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace PayrollSystem.Services
         /// </summary>
         public static void NotifyFinance(PaySlip slip)
         {
-            Console.WriteLine($"[Finance] Payment initiated for Employee ID: {slip.EmployeeId}");
+            Console.WriteLine($"[Finance] Payment initiated for {slip.EmployeeName}");
         }
 
         #endregion

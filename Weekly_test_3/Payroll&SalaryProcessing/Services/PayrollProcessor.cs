@@ -34,10 +34,9 @@ namespace PayrollSystem.Services
                     PaySlip slip = employee.CalculateSalary();
                     payslips.Add(slip);
 
+                    Console.WriteLine($"Processed: {slip.EmployeeName} | Gross: {slip.GrossSalary} | Net: {slip.NetSalary}");
                     SalaryProcessed?.Invoke(slip);
-
-                    Console.WriteLine(
-                        $"Processed: {slip.EmployeeName} | Gross: {slip.GrossSalary} | Net: {slip.NetSalary}");
+                    Console.WriteLine("*********************************");
                 }
                 catch (Exception ex)
                 {

@@ -9,7 +9,14 @@ namespace PayrollSystem
     {
         static void Main()
         {
-            var employees = new List<Employee>();
+            var employees = new List<Employee>
+            {
+                new FullTimeEmployee(101, "Rahul", 50000, 30),
+                new FullTimeEmployee(102, "Sneha", 65000, 30),
+                new FullTimeEmployee(103, "Amit", 80000, 30),
+                new ContractEmployee(201, "Indra", 1200, 22),
+                new ContractEmployee(202, "Viswa", 3000, 20)
+            };
             bool exit = false;
 
             Console.WriteLine("=== Payroll System ===\n");
